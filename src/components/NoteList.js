@@ -3,38 +3,41 @@ import { useEffect, useState } from "react";
 import API from "../Api/Api";
 import NoteListCard from "./NoteListCard";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Editable, EditableInput, EditablePreview } from "@chakra-ui/react"
+import { Textarea } from "@chakra-ui/react" 
+import { Input } from "@chakra-ui/react"
 function NoteList() {
   const [list, setList] = useState();
+  const [tabs,setTabs]=useState();
+  const [tabPanels,setTabpanels]=useState()
   useEffect(() => {
     const result = API();
     result.then((res) => {
-      const listItems = res.map((item) => {
-        return <NoteListCard data={item} />;
-      });
-      console.log(listItems);
-      setList(listItems);
+      
+      var temp=res.map(item=>{
+         return <Tab>{item.title}</Tab>
+      })
+      setTabs(temp)
+        temp=res.map(item=>{
+         return <TabPanel>
+           <Input value={item.title} variant="unstyled" size="lg" />
+           <Textarea value={item.text}  size="lg"/>
+    
+           </TabPanel>
+      })
+      setTabpanels(temp)
     });
   }, []);
 
   return (
     <div>
-      <Tabs orientation={"vertical"}>
+      <Tabs variant="soft-square"  orientation={"vertical"}>
         <TabList>
-          <Tab>One</Tab>
-          <Tab>Two</Tab>
-          <Tab>Three</Tab>
+          {tabs}
         </TabList>
 
         <TabPanels>
-          <TabPanel>
-            <p>one!</p>
-          </TabPanel>
-          <TabPanel>
-            <p>two!</p>
-          </TabPanel>
-          <TabPanel>
-            <p>three!</p>
-          </TabPanel>
+          {tabPanels}
         </TabPanels>
       </Tabs>
     </div>
